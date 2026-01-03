@@ -12,7 +12,7 @@ function App() {
 
     const formData = new FormData();
     formData.append("resume", resume);
-    formData.append("job_text", jobText);
+    formData.append("job_description", jobText);
 
     const response = await fetch("http://127.0.0.1:8000/analyze", {
       method: "POST",
