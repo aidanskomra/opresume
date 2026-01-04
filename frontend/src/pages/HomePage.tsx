@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingIndicator from "../components/LoadingIndicator";
 import AlertBanner from "../components/AlertBanner";
+import ResumeDropzone from "../components/ResumeDropzone";
 import type { AnalysisResult } from "../types/analysis";
+
 
 const API_URL = "http://127.0.0.1:8000/analyze";
 
@@ -40,7 +42,7 @@ export default function HomePage() {
     try {
       const response = await fetch(API_URL, { method: "POST", body: formData });
 
-      const raw = await response.text(); // read as text first to handle non-JSON errors safely
+      const raw = await response.text();
       if (!response.ok) {
         setErrorMsg(formatApiError(response.status, raw));
         return;
@@ -61,57 +63,58 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ maxWidth: 800, margin: "4rem auto", padding: "0 1rem", fontFamily: "sans-serif" }}>
-      <h1 style={{ marginBottom: 8 }}>OPResume AI Resume Analyzer</h1>
-      <p style={{ marginTop: 0, color: "#444" }}>
-        Upload your resume and optionally paste a job posting to receive a detailed analysis.
-      </p>
-
-      <div style={{ marginTop: "1.5rem" }}>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>Resume (PDF)</label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(e) => setResume(e.target.files?.[0] || null)}
-          disabled={isLoading}
-        />
+  <div className="op-page">
+  <div className="op-shell">
+    <div className="op-container">
+      <div className="op-title">
+        <h1 className="op-h1">
+          <span className="text-emerald-400">OP</span>Resume
+        </h1>
+        <p className="op-subtitle">Optimize your resume with AI analysis!</p>
       </div>
 
-      <div style={{ marginTop: "1.5rem" }}>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: 8 }}>
-          Job Posting (optional)
-        </label>
-        <textarea
-          placeholder="Paste job description here (optional)…"
-          rows={10}
-          style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
-          value={jobText}
-          onChange={(e) => setJobText(e.target.value)}
-          disabled={isLoading}
-        />
-        <div style={{ marginTop: 6, fontSize: 12, color: "#666" }}>
-          Note: Requests are rate-limited to prevent abuse.
+      <div className="op-grid-2">
+        <div className="op-card">
+          <h2 className="op-card-title">Job Posting (optional)</h2>
+          <p className="op-card-help">Paste the job description to improve scoring accuracy.</p>
+          <textarea
+                className="op-textarea"
+                placeholder="Paste job description here..."
+                value={jobText}
+                onChange={(e) => setJobText(e.target.value)}
+                disabled={isLoading}
+              />
+        </div>
+
+        <div className="op-card">
+          <h2 className="op-card-title">Resume (PDF)</h2>
+          <p className="op-card-help">Drag and drop or click to upload a PDF resume.</p>
+          <ResumeDropzone
+                selectedFile={resume}
+                onFileSelected={setResume}
+                disabled={isLoading}
+                iconSrc="/upload.png"
+           />
         </div>
       </div>
-
-      <button
-        style={{
-          marginTop: "1.25rem",
-          padding: "0.7rem 1.1rem",
-          borderRadius: 10,
-          border: "1px solid #333",
-          background: isLoading ? "#eee" : "#fff",
-          cursor: isLoading ? "not-allowed" : "pointer",
-          fontWeight: 600,
-        }}
-        onClick={handleSubmit}
-        disabled={isLoading}
-      >
-        {isLoading ? "Analyzing…" : "Submit"}
-      </button>
-
-      {isLoading && <LoadingIndicator />}
-      {errorMsg && <AlertBanner message={errorMsg} />}
+      <div className="mt-8 flex justify-center">
+        <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="op-primary-btn">{isLoading ? "Analyzing..." : "Analyze Resume"}
+          </button>
+        </div>
+        <div className="mt-4 flex justify-center">
+            {isLoading && <LoadingIndicator />}
+          </div>
+          {errorMsg && <AlertBanner message={errorMsg} />}
+            <footer className="mt-5 pb-2 text-center text-sm text-slate-500">
+                © 2026 Aidan Skomra
+            </footer>
     </div>
-  );
+  </div>
+</div>
+
+);
+
 }

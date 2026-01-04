@@ -3,17 +3,11 @@ type Props = {
 };
 
 export default function AlertBanner({ message }: Props) {
+  if (!message) return null;
+
   return (
     <div
-      style={{
-        marginTop: "1rem",
-        padding: "0.75rem 1rem",
-        border: "1px solid #f5c2c7",
-        background: "#f8d7da",
-        color: "#842029",
-        borderRadius: 8,
-        whiteSpace: "pre-wrap",
-      }}
+      className="mt-4 rounded-xl border border-red-900/40 bg-red-950/40 p-4 text-red-200 whitespace-pre-wrap"
       role="alert"
     >
       {message}

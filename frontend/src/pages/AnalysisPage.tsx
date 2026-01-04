@@ -7,7 +7,7 @@ export default function AnalysisPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Prefer router state; fall back to sessionStorage for refresh safety
+
   const stateResult = (location.state as { result?: AnalysisResult } | null)?.result;
   const stored = sessionStorage.getItem("analysisResult");
   const storedResult = stored ? (JSON.parse(stored) as AnalysisResult) : null;
@@ -30,49 +30,77 @@ export default function AnalysisPage() {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: "3rem auto", padding: "0 1rem", fontFamily: "sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-        <h1 style={{ margin: 0 }}>Your Analysis</h1>
-        <button
-          onClick={() => {
-            sessionStorage.removeItem("analysisResult");
-            navigate("/");
-          }}
-          style={{ padding: "0.7rem 1.1rem", borderRadius: 10, border: "1px solid #333", background: "#fff" }}
-        >
-          Start New Analysis
-        </button>
+  <div className="op-page">
+    <div className="op-shell items-start">
+      <div className="op-container">
+        <div className="op-topbar">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight">
+                <span className="text-emerald-400">OP</span>Resume Analysis
+            </h1>
+            <p className="mt-2 text-slate-400">
+              Review your score, key findings, and feedback.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                sessionStorage.removeItem("analysisResult");
+                navigate("/");
+              }}
+              className="op-primary-btn"
+            >
+              Start New Analysis
+            </button>
+          </div>
+        </div>
+
+        <div className="op-grid-2">
+          <ScoreCard score={result.score} />
+
+          <div className="op-card">
+            <h2 className="op-card-title">Summary</h2>
+
+            <div className="mt-4 leading-relaxed text-slate-200 whitespace-pre-wrap">
+              {result.summary}
+            </div>
+          </div>
+        </div>
+
+        <div className="op-grid-2">
+          <CategorySection title="Strengths" items={result.strengths} />
+          <CategorySection title="Improvements" items={result.improvements} />
+        </div>
+
+        <div className="op-grid-2">
+          <div className="op-card">
+            <h2 className="op-card-title">ATS Notes</h2>
+            <p className="op-card-help">Parsing and keyword scan.</p>
+
+            <ul className="mt-4 space-y-2 pl-5 text-slate-200">
+              {result.ats_notes.map((n, idx) => (
+                <li key={idx}>{n}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="op-card">
+            <h2 className="op-card-title">Next Steps</h2>
+            <p className="op-card-help">Recommended improvements to prioritize.</p>
+
+            <ul className="mt-4 space-y-2 pl-5 text-slate-200">
+              {result.next_steps.map((n, idx) => (
+                <li key={idx}>{n}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-
-      <div style={{ marginTop: "1rem" }}>
-        <ScoreCard score={result.score} />
-      </div>
-
-      <section style={{ marginTop: "1.25rem" }}>
-        <h2>Summary</h2>
-        <p style={{ color: "#333", lineHeight: 1.5 }}>{result.summary}</p>
-      </section>
-
-      <CategorySection title="Strengths" items={result.strengths} />
-      <CategorySection title="Improvements" items={result.improvements} />
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>ATS Notes</h2>
-        <ul style={{ margin: 0, paddingLeft: 18 }}>
-          {result.ats_notes.map((n, idx) => (
-            <li key={idx} style={{ marginBottom: 6 }}>{n}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={{ marginTop: "1.5rem" }}>
-        <h2>Next Steps</h2>
-        <ul style={{ margin: 0, paddingLeft: 18 }}>
-          {result.next_steps.map((n, idx) => (
-            <li key={idx} style={{ marginBottom: 6 }}>{n}</li>
-          ))}
-        </ul>
-      </section>
     </div>
-  );
+      <footer className="pb-2 text-center text-sm text-slate-500">
+    © 2026 Aidan Skomra
+  </footer>
+  </div>
+);
 }
