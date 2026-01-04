@@ -1,34 +1,35 @@
 from PyPDF2 import PdfReader
 from fastapi import UploadFile, HTTPException
+from io import BytesIO
+from app.core.config import MAX_PDF_MB
 
 MAX_PAGES = 5
+MAX_PDF_BYTES = MAX_PDF_MB * 1024 * 1024
 
 def extract_text_from_pdf(file: UploadFile) -> str:
     try:
-        reader = PdfReader(file.file)
+        file.file.seek(0)
+        data = file.file.read(MAX_PDF_BYTES + 1)
+        if len(data) > MAX_PDF_BYTES:
+            raise HTTPException(status_code=400, detail=f"PDF exceeds {MAX_PDF_MB} MB limit")
 
+        reader = PdfReader(BytesIO(data))
         if len(reader.pages) > MAX_PAGES:
-            raise HTTPException(
-                status_code=400,
-                detail="PDF is too long"
-            )
+            raise HTTPException(status_code=400, detail="PDF exceeds maximum page limit")
 
-        text = ""
+        text_chunks: list[str] = []
         for page in reader.pages:
             page_text = page.extract_text()
             if page_text:
-                text += page_text + "\n"
+                text_chunks.append(page_text)
 
-        if not text.strip():
-            raise HTTPException(
-                status_code=400,
-                detail="Could not extract text from PDF"
-            )
+        full_text = "\n".join(text_chunks).strip()
+        if not full_text:
+            raise HTTPException(status_code=400, detail="No extractable text found in PDF")
 
-        return text.strip()
+        return full_text
 
+    except HTTPException:
+        raise
     except Exception:
-        raise HTTPException(
-            status_code=400,
-            detail="Invalid PDF file"
-        )
+        raise HTTPException(status_code=400, detail="Invalid or corrupted PDF file")
