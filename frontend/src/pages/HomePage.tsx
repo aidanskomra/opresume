@@ -6,7 +6,8 @@ import ResumeDropzone from "../components/ResumeDropzone";
 import type { AnalysisResult } from "../types/analysis";
 
 
-const API_URL = "http://127.0.0.1:8000/analyze";
+const API_BASE = import.meta.env.VITE_API_URL;
+const API_URL = `${API_BASE}/analyze`;
 
 function formatApiError(status: number, bodyText: string) {
   if (status === 429) return "Too many requests. Please wait a moment and try again.";
