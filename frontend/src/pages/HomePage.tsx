@@ -5,7 +5,7 @@ import AlertBanner from "../components/AlertBanner";
 import ResumeDropzone from "../components/ResumeDropzone";
 import type { AnalysisResult } from "../types/analysis";
 
-//Base API URL injected at build time
+//Base API URL injected at build time.
 //points to render backend
 const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const API_URL = `${API_BASE}/analyze`
