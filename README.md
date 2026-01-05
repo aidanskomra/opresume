@@ -25,7 +25,7 @@ OPResume allows users to upload a PDF resume (optionally alongside a job descrip
 - ATS parsing and keyword notes
 - Clear, prioritized next steps for improvement
 
-The system enforces **strict structured output**, ensuring responses are deterministicand reliable.
+The system enforces **strict structured output**, ensuring responses are deterministic and reliable.
 
 ---
 
@@ -35,18 +35,18 @@ The system enforces **strict structured output**, ensuring responses are determi
 
 ![Analysis Results](./assets/analyzepage.png)
 
-*Complete resume analysis workflow: upload your resume and receive AI-powered ATS scoring with actionable feedback*
+*Complete resume analysis workflow: upload your resume and receive AI powered ATS scoring with actionable feedback*
 
 ---
 
 ## Architecture Overview
 
-OPResume is built as a decoupled frontend and backend system, deployed with production-grade infrastructure.
+OPResume is built as a decoupled frontend and backend system, deployed with production grade infrastructure.
 
 ### Frontend
 - **React + TypeScript (Vite)**
 - **Tailwind CSS** with a reusable component system
-- Client-side routing
+- Client side routing
 - Animated score visualization
 - Hosted on **Vercel**
 - Canonical domain: `opresume.ca`
