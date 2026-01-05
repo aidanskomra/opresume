@@ -5,10 +5,12 @@ import AlertBanner from "../components/AlertBanner";
 import ResumeDropzone from "../components/ResumeDropzone";
 import type { AnalysisResult } from "../types/analysis";
 
-
+//Base API URL injected at build time
+//points to render backend
 const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const API_URL = `${API_BASE}/analyze`
 
+// Maps HTTP error codes to user friendly error messages
 function formatApiError(status: number, bodyText: string) {
   if (status === 429) return "Too many requests. Please wait a moment and try again.";
   if (status === 400) return bodyText || "Invalid input. Please check your PDF and job posting.";
@@ -23,6 +25,7 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Submits the resume and job posting to the backend for analysis
   const handleSubmit = async () => {
     setErrorMsg(null);
 
@@ -43,14 +46,17 @@ export default function HomePage() {
     try {
       const response = await fetch(API_URL, { method: "POST", body: formData });
 
+      // read raw first
       const raw = await response.text();
       if (!response.ok) {
         setErrorMsg(formatApiError(response.status, raw));
         return;
       }
 
+      // successful analysis result
       const result = JSON.parse(raw) as AnalysisResult;
 
+      // persist so the analysis page survives reloads
       sessionStorage.setItem("analysisResult", JSON.stringify(result));
 
       navigate("/analysis", { state: { result } });

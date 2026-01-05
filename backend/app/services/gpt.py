@@ -8,6 +8,7 @@ from app.schemas.analysis import AnalysisResult
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 
+# system prompt defines the strict output requirements following the analysis schema
 SYSTEM_PROMPT = """
 You are a professional ATS and recruiter resume evaluator.
 

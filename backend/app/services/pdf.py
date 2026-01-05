@@ -9,14 +9,18 @@ MAX_PDF_BYTES = MAX_PDF_MB * 1024 * 1024
 def extract_text_from_pdf(file: UploadFile) -> str:
     try:
         file.file.seek(0)
+
+        # Read only up to the limit
         data = file.file.read(MAX_PDF_BYTES + 1)
         if len(data) > MAX_PDF_BYTES:
             raise HTTPException(status_code=400, detail=f"PDF exceeds {MAX_PDF_MB} MB limit")
 
+        # Parse the PDF from bytes
         reader = PdfReader(BytesIO(data))
         if len(reader.pages) > MAX_PAGES:
             raise HTTPException(status_code=400, detail="PDF exceeds maximum page limit")
 
+        # Etract page by page
         text_chunks: list[str] = []
         for page in reader.pages:
             page_text = page.extract_text()
