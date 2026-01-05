@@ -44,7 +44,6 @@ export default function AnalysisPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            // clears persisted analysis state and returns user to the upload flow
             <button
               onClick={() => {
                 sessionStorage.removeItem("analysisResult");
